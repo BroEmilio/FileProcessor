@@ -12,6 +12,7 @@ import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.SwingConstants;
@@ -49,7 +50,7 @@ public class RunApplication extends JFrame {
 		
 		fileName = new JTextField();
 		fileName.setEnabled(false);
-		fileName.setHorizontalAlignment(SwingConstants.LEFT);
+		fileName.setHorizontalAlignment(SwingConstants.CENTER);
 		fileName.setFont(new Font("Arial", Font.ITALIC, 12));
 		fileName.setColumns(10);
 		
@@ -67,6 +68,15 @@ public class RunApplication extends JFrame {
 		
 		processButton = new JButton("Przetwarzaj");
 		processButton.setFont(new Font("Arial", Font.BOLD | Font.ITALIC, 12));
+		processButton.addActionListener(new ActionListener() {
+        	@Override
+        	public void actionPerformed(ActionEvent e) {
+        		if(choosedFile!=null) {
+        			ProcessFile fileProcessing = new ProcessFile(choosedFile);
+        			fileProcessing.run();
+        		}
+        	}
+    	});
 		
 		frameLabel = new JTextField();
 		frameLabel.setEnabled(false);
@@ -107,6 +117,10 @@ public class RunApplication extends JFrame {
 					.addContainerGap())
 		);
 		getContentPane().setLayout(groupLayout);
+	}
+	
+	void showErrorMessage(){
+		
 	}
 	
 	File getChoosedFile() {
