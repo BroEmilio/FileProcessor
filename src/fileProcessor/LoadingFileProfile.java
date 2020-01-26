@@ -1,35 +1,22 @@
 package fileProcessor;
 
-import java.io.File;
-
+import java.nio.file.Path;
 import javax.swing.JFileChooser;
-import javax.swing.filechooser.FileFilter;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 public class LoadingFileProfile {
 	public LoadingFileProfile() {
-		loadChooser = setLoadChooser(loadFilter);
+		loadChooser = configureLoadChooser(loadFilter);
 	}
 	
-	File loadedFile;
+	Path loadedFile;
 	JFileChooser loadChooser;
 	
 	//set filter for files 
-	FileFilter loadFilter = new FileFilter() {
-		@Override
-		public String getDescription() {
-		  return "plik tekstowy (.txt)";
-		}
-		@Override
-		public boolean accept(File f) {
-			if (f.isDirectory()) {
-	            return true;
-	        } else {
-	            return f.getName().toLowerCase().endsWith(".txt");
-	        }
-		}
-	};
+	FileNameExtensionFilter loadFilter = new FileNameExtensionFilter("Pliki tekstowe", "acs");
+
 	
-	JFileChooser setLoadChooser(FileFilter filter) {
+	JFileChooser configureLoadChooser(FileNameExtensionFilter filter) {
 		String userDir = System.getProperty("user.home");
 		JFileChooser chooser= new JFileChooser(userDir +"/Desktop");
 		chooser.setFileFilter(filter);
@@ -37,12 +24,12 @@ public class LoadingFileProfile {
     	chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
     	chooser.setAcceptAllFileFilterUsed(false);
     	chooser.showOpenDialog(null);
-    	loadedFile = chooser.getSelectedFile();
+    	loadedFile = chooser.getSelectedFile().toPath();
     	
     	return chooser;
 	}
 	
-	public File getFile() {
+	public Path getPath() {
 		return loadedFile;
 	}
 	

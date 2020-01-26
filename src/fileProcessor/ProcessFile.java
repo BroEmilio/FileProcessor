@@ -1,11 +1,15 @@
 package fileProcessor;
-import java.io.*;
 
+import java.io.*;
+import java.nio.file.*;
+import java.nio.charset.Charset;
+import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 import javax.swing.JOptionPane;
 
 public class ProcessFile {
-	File loadedFile, tempFile, savedFile;
-	String tempFilePath = System.getProperty("user.home")+"\\Desktop\\postProcessTempFile.txt";
+	Path loadedFile, tempFile, savingFile;
+	SavingFileProfile saver;
+	//Path tempFilePath = Paths.get(System.getProperty("user.home")+"\\Desktop");
 	
 	String processLineOfFile(String originalLine) {
 		// TODO implement here algorithm of process line and return them
@@ -13,46 +17,44 @@ public class ProcessFile {
 		return newLine;
 	}
 	
-	public ProcessFile(File file) {
+	public ProcessFile(Path file) {
 		this.loadedFile = file;
 	}
 	
 	boolean run() {
-		tempFile = new File(tempFilePath);
-		BufferedReader reader=null;
-		Writer writer = null;
+		BufferedReader reader;
+		BufferedWriter writer;
 		try {
-			reader = new BufferedReader(new FileReader(loadedFile));
-			writer = new BufferedWriter(new FileWriter(tempFile));
-			String currentLine;
-			while ((currentLine = reader.readLine()) != null) {
+			reader = Files.newBufferedReader(loadedFile, Charset.defaultCharset());
+			tempFile = Files.createTempFile("tempProcessFile", ".txt");
+			writer = Files.newBufferedWriter(tempFile, Charset.defaultCharset());
+			String currentLine=null;
+			while((currentLine = reader.readLine()) != null) {
 				String newLine = processLineOfFile(currentLine);
 				writer.write(newLine);
+				writer.flush();
 			}
+			saver = new SavingFileProfile();
+			saver.setNameLoadedFile(loadedFile.getFileName().toString());
+			saver.setSavingFileProfile();
+			savingFile = saver.getPath();
+			Files.copy(tempFile.toAbsolutePath(), savingFile, REPLACE_EXISTING);
+			Files.delete(tempFile);
 		} catch (FileNotFoundException e) {
-			displayErrorFrame(e.getMessage());
+			displayErrorFrame(e.toString());
 			e.printStackTrace();
 			return false;
 		} catch (IOException e) {
-			displayErrorFrame(e.getMessage());
+			displayErrorFrame(e.toString());
 			e.printStackTrace();
 			return false;
-		}  finally {
-					try {
-						reader.close();
-						writer.close();
-					} catch (IOException e) {
-						displayErrorFrame(e.getMessage());
-						e.printStackTrace();
-						return false;
-					}
-		}
+		} 
 		return true;
 	}
 	
-	void displayErrorFrame(String errorMessage) {
+	void displayErrorFrame(String errorMessege) {
 		JOptionPane.showMessageDialog(null,
-				"Wyst¹pi³ b³¹d:"+errorMessage,
+				"Wyst¹pi³ b³ad: \r\n"+errorMessege,
 		        "Wyst¹pi³ b³¹d",
 		        JOptionPane.ERROR_MESSAGE);
 	}

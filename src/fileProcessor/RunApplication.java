@@ -1,22 +1,11 @@
 package fileProcessor;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.EventQueue;
-import java.awt.Font;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.File;
-
-import javax.swing.GroupLayout;
+import java.awt.*;
+import java.awt.event.*;
+import java.nio.file.Path;
+import javax.swing.*;
 import javax.swing.GroupLayout.Alignment;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
-import javax.swing.JTextField;
 import javax.swing.LayoutStyle.ComponentPlacement;
-import javax.swing.SwingConstants;
-import javax.swing.UIManager;
 
 @SuppressWarnings("serial")
 public class RunApplication extends JFrame {
@@ -24,7 +13,7 @@ public class RunApplication extends JFrame {
 	private JTextField fileName;
 	private JTextField frameLabel;
 	private JButton chooseButton, processButton;
-	File choosedFile;
+	Path choosedFile;
 	
 	public RunApplication() {
 		initializeGUI();
@@ -60,9 +49,9 @@ public class RunApplication extends JFrame {
         	@Override
         	public void actionPerformed(ActionEvent e) {
         		LoadingFileProfile loader = new LoadingFileProfile();
-        		choosedFile = loader.getFile();
+        		choosedFile = loader.getPath();
         		if(choosedFile!=null)
-        			fileName.setText(choosedFile.getAbsolutePath());
+        			fileName.setText(choosedFile.toAbsolutePath().toString());
 	    		}
     	});
 		
@@ -73,7 +62,14 @@ public class RunApplication extends JFrame {
         	public void actionPerformed(ActionEvent e) {
         		if(choosedFile!=null) {
         			ProcessFile fileProcessing = new ProcessFile(choosedFile);
-        			fileProcessing.run();
+        			if(fileProcessing.run()) {
+	        			int result=JOptionPane.showConfirmDialog(null,
+	        						"Poprawnie przetworzono plik "+choosedFile.getFileName().toString(),
+	        						"Poprawnie przetworzono",
+	        						JOptionPane.OK_CANCEL_OPTION, JOptionPane.INFORMATION_MESSAGE);
+        				if(result==JOptionPane.OK_OPTION || result == JOptionPane.CANCEL_OPTION)
+        					System.exit(0);
+        			}
         		}
         	}
     	});
@@ -121,10 +117,6 @@ public class RunApplication extends JFrame {
 	
 	void showErrorMessage(){
 		
-	}
-	
-	File getChoosedFile() {
-		return choosedFile;
 	}
 	
 	public static void main(String[] args) {
