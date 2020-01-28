@@ -1,0 +1,8 @@
+FileProcessor v1.0 - compatible with Java 1.7
+To create executable jar :
+1. Download package FileProcessor from GitHub and JDK
+2. Open "Command Line" and go to directory with package (cd <path>)
+3. Compile there package (javac -cp . fileProcessor/RunApplication.java)
+4. Create executable jar by:
+   (jar cvfe FileApp.jar fileProcessor.RunApplication fileProcessor\*.class)
+5. Copy jar anywhere and open by double click (From Command Line: <jarDirectory>:java -jar FileApp.jar)

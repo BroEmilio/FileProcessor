@@ -2,6 +2,7 @@ package fileProcessor;
 
 import java.io.*;
 import java.nio.file.*;
+import java.util.regex.*;
 import java.nio.charset.Charset;
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 import javax.swing.JOptionPane;
@@ -12,8 +13,23 @@ public class ProcessFile {
 	//Path tempFilePath = Paths.get(System.getProperty("user.home")+"\\Desktop");
 	
 	String processLineOfFile(String originalLine) {
-		// TODO implement here algorithm of process line and return them
-		String newLine = originalLine + "XxX\r\n";
+        String[] splitLine = originalLine.split("\\s+");
+        String pointNumber = splitLine[1];
+        
+        Pattern pointsPrefixPattern = Pattern.compile("\\d{3}\\.\\d{3}-"); //erase prefix (example 223.112-)
+        Matcher matcher = pointsPrefixPattern.matcher(pointNumber);
+        String noPrefixNumber = matcher.replaceAll("").toString();
+        
+        Pattern slashPattern = Pattern.compile("[/]");	//replace / by -
+        matcher = slashPattern.matcher(noPrefixNumber);
+        String finalNumber = matcher.replaceAll("-");
+        
+        String newLine = "";
+        for(int splitIndex=1; splitIndex<splitLine.length; splitIndex++)
+        	newLine = newLine+splitLine[splitIndex]+"\t";
+        
+        newLine += finalNumber+"\r\n";
+        
 		return newLine;
 	}
 	

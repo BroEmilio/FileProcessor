@@ -13,7 +13,7 @@ public class LoadingFileProfile {
 	JFileChooser loadChooser;
 	
 	//set filter for files 
-	FileNameExtensionFilter loadFilter = new FileNameExtensionFilter("Pliki tekstowe", "acs");
+	FileNameExtensionFilter loadFilter = new FileNameExtensionFilter("Pliki tekstowe", "txt");
 
 	
 	JFileChooser configureLoadChooser(FileNameExtensionFilter filter) {
